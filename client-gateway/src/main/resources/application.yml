@@ -1,0 +1,24 @@
+server:
+  port: 9100
+
+spring:
+  application:
+    name: client-gateway
+  security:
+    oauth2:
+      client:
+        registration:
+          client-gateway-authorization-code:
+            provider: spring
+            client-id: mobile-gateway-client
+            client-secret: 123456
+            client-authentication-method: client_secret_basic
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:9100/oauth2/callback"
+            scope: message.read,message.write
+        provider:
+          spring:
+            issuer-uri: http://localhost:9000
+
+user-service:
+  base-uri: http://127.0.0.1:9001/menu/list
