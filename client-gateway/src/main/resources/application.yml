@@ -8,13 +8,20 @@ spring:
     oauth2:
       client:
         registration:
+          mobile-gateway-client-oidc:
+            provider: spring
+            client-id: mobile-gateway-client
+            client-secret: 123456
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://127.0.0.1:9100/login/oauth2/code/{registrationId}"
+            scope: openid
           client-gateway-authorization-code:
             provider: spring
             client-id: mobile-gateway-client
             client-secret: 123456
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
-            redirect-uri: "http://127.0.0.1:9100/oauth2/callback"
+            redirect-uri: "http://127.0.0.1:9100/authorized"
             scope: message.read,message.write
         provider:
           spring:

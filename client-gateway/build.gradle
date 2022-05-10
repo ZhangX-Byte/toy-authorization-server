@@ -28,12 +28,6 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-
-    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
-    implementation "org.thymeleaf.extras:thymeleaf-extras-springsecurity5"
-    implementation "org.webjars:webjars-locator-core"
-    implementation "org.webjars:bootstrap:3.4.1"
-    implementation "org.webjars:jquery:3.4.1"
 }
 
 tasks.named('test') {
