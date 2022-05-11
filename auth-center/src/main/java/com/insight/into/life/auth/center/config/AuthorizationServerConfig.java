@@ -10,23 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.UUID;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -46,24 +37,7 @@ public class AuthorizationServerConfig {
 
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
-        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("mobile-gateway-client")
-                .clientSecret("{noop}123456")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .redirectUri("http://127.0.0.1:9100/login/oauth2/code/mobile-gateway-client-oidc")
-                .redirectUri("http://127.0.0.1:9100/authorized")
-                .scope(OidcScopes.OPENID)
-                .scope("message.read")
-                .scope("message.write")
-                .build();
-
-        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-        registeredClientRepository.save(registeredClient);
-
-        return registeredClientRepository;
+        return new JdbcRegisteredClientRepository(jdbcTemplate);
     }
 
     @Bean
@@ -82,18 +56,5 @@ public class AuthorizationServerConfig {
     public ProviderSettings providerSettings() {
         return ProviderSettings.builder().issuer("http://localhost:9000").build();
     }
-
-    @Bean
-    public EmbeddedDatabase embeddedDatabase() {
-        return new EmbeddedDatabaseBuilder()
-                .generateUniqueName(true)
-                .setType(EmbeddedDatabaseType.H2)
-                .setScriptEncoding("UTF-8")
-                .addScript("org/springframework/security/oauth2/server/authorization/oauth2-authorization-schema.sql")
-                .addScript("org/springframework/security/oauth2/server/authorization/oauth2-authorization-consent-schema.sql")
-                .addScript("org/springframework/security/oauth2/server/authorization/client/oauth2-registered-client-schema.sql")
-                .build();
-    }
-
 
 }

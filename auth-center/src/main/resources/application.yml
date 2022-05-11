@@ -7,3 +7,27 @@ logging:
     org.springframework.web: INFO
     org.springframework.security: INFO
     org.springframework.security.oauth2: INFO
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/auth-center?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+
+client:
+  registers:
+    - client-id: mobile-gateway-client
+      client-secret: "{noop}123456"
+      authentication-method: client_secret_basic
+      grant-types:
+        - authorization_code
+        - refresh_token
+        - client_credentials
+      scopes:
+        - openid
+        - message.read
+        - message.write
+      redirect-uris:
+        - http://127.0.0.1:9100/login/oauth2/code/mobile-gateway-client-oidc
+        - http://127.0.0.1:9100/authorized
